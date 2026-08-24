@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   IconBandeja,
   IconCarpeta,
@@ -100,9 +101,32 @@ const GRUPOS: { titulo: string; tono: string; enlaces: Enlace[] }[] = [
 
 export function Sidebar() {
   const ruta = usePathname();
+  // Se guarda la ruta en la que se abrió el menú: al navegar cambia la
+  // ruta y el cajón se cierra solo, sin efectos ni renders en cascada.
+  const [rutaDelMenu, setRutaDelMenu] = useState<string | null>(null);
+  const abierto = rutaDelMenu === ruta;
+  const cerrar = () => setRutaDelMenu(null);
+
+  useEffect(() => {
+    if (!abierto) return;
+    const alPresionar = (evento: KeyboardEvent) => {
+      if (evento.key === "Escape") setRutaDelMenu(null);
+    };
+    window.addEventListener("keydown", alPresionar);
+    return () => window.removeEventListener("keydown", alPresionar);
+  }, [abierto]);
 
   return (
-    <aside className={styles.sidebar}>
+    <aside className={styles.sidebar} data-abierto={abierto}>
+      {abierto && (
+        <button
+          type="button"
+          className={styles.velo}
+          onClick={cerrar}
+          aria-label="Cerrar menú"
+        />
+      )}
+
       <div className={styles.marca}>
         <div className={styles.marcaEscudo}>
           <div className={styles.marcaEscudoInterior}>
@@ -119,9 +143,20 @@ export function Sidebar() {
           <span className={styles.marcaNombre}>France N°3</span>
           <span className={styles.marcaSub}>Gestión institucional</span>
         </div>
+
+        <button
+          type="button"
+          className={styles.hamburguesa}
+          onClick={() => setRutaDelMenu(abierto ? null : ruta)}
+          aria-expanded={abierto}
+          aria-controls="navegacion-principal"
+          aria-label={abierto ? "Cerrar menú" : "Abrir menú"}
+        >
+          <span className={styles.hamburguesaBarras} data-abierto={abierto} />
+        </button>
       </div>
 
-      <nav className={styles.nav}>
+      <nav id="navegacion-principal" className={styles.nav}>
         {GRUPOS.map((grupo) => (
           <div key={grupo.titulo}>
             <p className={styles.grupoTitulo}>
@@ -150,6 +185,7 @@ export function Sidebar() {
                     className={`${styles.enlace} ${
                       ruta === enlace.href ? styles.enlaceActivo : ""
                     }`}
+                    onClick={cerrar}
                   >
                     <span className={styles.enlaceIcono}>{enlace.icono}</span>
                     {enlace.texto}
