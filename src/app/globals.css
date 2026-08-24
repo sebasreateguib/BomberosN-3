@@ -1,26 +1,60 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #07060a;
+  --ink-2: #0d0b11;
+  --ash: #16141b;
+  --bone: #f4f0e9;
+  --muted: rgba(244, 240, 233, 0.56);
+  --muted-dim: rgba(244, 240, 233, 0.34);
+
+  --brass: #c9a24b;
+  --brass-hi: #f2dda6;
+  --brass-dim: rgba(201, 162, 75, 0.28);
+
+  --ember: #e5372a;
+  --ember-hi: #ff6a4d;
+  --ember-deep: #8f1109;
+
+  --bleu: #2c4a9a;
+  --rouge: #c8102e;
+
+  --rail: 3px;
+  --ease: cubic-bezier(0.22, 0.9, 0.28, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Nada de overflow-x aquí: convierte al body en contenedor de scroll y
+   rompe el position: sticky de la barra lateral del panel. */
+html,
+body {
+  max-width: 100vw;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: var(--ink);
+  color: var(--bone);
+  font-family: var(--font-body), "Helvetica Neue", sans-serif;
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--ember);
+  color: #fff;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brass-hi);
+  outline-offset: 3px;
 }
