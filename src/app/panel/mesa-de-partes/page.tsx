@@ -8,7 +8,7 @@ import {
 } from "@/lib/datos-demo";
 import { EtiquetaEstado, EtiquetaPrioridad } from "./Etiquetas";
 import { Grafico } from "./Grafico";
-import { IconChispa, IconFlecha } from "../iconos";
+import { IconFlecha } from "../iconos";
 import styles from "../panel.module.css";
 
 export const metadata: Metadata = { title: "Mesa de Partes Virtual" };
@@ -137,20 +137,6 @@ export default function MesaDePartes() {
                 </span>
               </div>
             ))}
-          </div>
-
-          <div className={styles.iaCaja} style={{ marginTop: "1.5rem" }}>
-            <span className={styles.iaTitulo}>
-              <IconChispa width={13} height={13} />
-              Clasificación automática
-            </span>
-            <span className={styles.iaValor}>
-              94% de los documentos fueron clasificados por la IA sin
-              corrección manual.
-            </span>
-            <span className={styles.medidor}>
-              <span className={styles.medidorRelleno} style={{ width: "94%" }} />
-            </span>
           </div>
         </article>
       </section>
