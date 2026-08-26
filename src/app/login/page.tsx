@@ -99,33 +99,6 @@ export default function LoginPage() {
             inteligencia artificial y tablero de mando para la Jefatura y el
             Cuadro de Oficiales.
           </p>
-
-          <div
-            className={`${styles.metrics} ${styles.enter}`}
-            style={{ "--d": "440ms" } as React.CSSProperties}
-          >
-            <div className={styles.metric}>
-              <span className={styles.metricValue}>
-                8<em>/11</em>
-              </span>
-              <span className={styles.metricLabel}>
-                <span className={styles.pulse} />
-                Unidades operativas
-              </span>
-            </div>
-            <div className={styles.metric}>
-              <span className={styles.metricValue}>
-                42<em>/56</em>
-              </span>
-              <span className={styles.metricLabel}>Personal disponible</span>
-            </div>
-            <div className={styles.metric}>
-              <span className={styles.metricValue}>
-                6:24<em> min</em>
-              </span>
-              <span className={styles.metricLabel}>Tiempo de respuesta</span>
-            </div>
-          </div>
         </section>
 
         {/* ---------- Panel de acceso ---------- */}
@@ -162,7 +135,10 @@ export default function LoginPage() {
       </div>
 
       <footer className={styles.foot}>
-        <span>© {new Date().getFullYear()} Compañía France N°3 · Administración</span>
+        <span className={styles.footCopy}>
+          © {new Date().getFullYear()} Compañía France N°3
+          <span className={styles.footDept}> · Administración</span>
+        </span>
         <nav className={styles.footNav}>
           <Link href="/soporte">Soporte</Link>
           <Link href="/reglamento">Reglamento de uso</Link>
