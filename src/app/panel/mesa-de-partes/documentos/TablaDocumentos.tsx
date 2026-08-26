@@ -43,7 +43,7 @@ export function TablaDocumentos({ documentos }: { documentos: Documento[] }) {
             type="search"
             value={busqueda}
             onChange={(evento) => setBusqueda(evento.target.value)}
-            placeholder="Buscar por número, asunto, remitente o área…"
+            placeholder="Buscar por número, asunto o área…"
             aria-label="Buscar documentos"
           />
         </label>

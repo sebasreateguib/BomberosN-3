@@ -756,11 +756,13 @@
 
 .campoBusqueda input {
   flex: 1;
+  min-width: 0;
   border: 0;
   background: transparent;
   color: var(--bone);
   font-family: inherit;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
+  text-overflow: ellipsis;
 }
 
 .campoBusqueda input:focus {
