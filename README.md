@@ -3,15 +3,6 @@
 Panel institucional que reúne los tres proyectos de modernización de la Compañía:
 Mesa de Partes Virtual, agente de IA para generación documental y dashboard ejecutivo.
 
-## Desarrollo
-
-```bash
-npm install
-npm run dev
-```
-
-Abrir [http://localhost:3000](http://localhost:3000). Acceso de demostración: `b-1866` / `france1866`.
-
 ---
 
 # Arquitectura
