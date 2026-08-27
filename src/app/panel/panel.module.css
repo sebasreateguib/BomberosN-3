@@ -1067,33 +1067,86 @@
 
 /* ---------- Agente IA: generador ---------- */
 
+/* Banco de trabajo de dos paneles: ambos comparten altura y hacen su
+   propio scroll, de modo que la hoja nunca queda descolgada respecto
+   del formulario ni deja hueco muerto debajo. */
 .generador {
+  --alto-banco: clamp(32rem, calc(100dvh - 15rem), 54rem);
   display: grid;
-  grid-template-columns: minmax(20rem, 30rem) minmax(0, 1fr);
-  gap: 1.25rem;
+  grid-template-columns: minmax(21rem, 27rem) minmax(0, 1fr);
+  gap: 1rem;
   align-items: start;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: var(--alto-banco);
+  min-height: 0;
+  border: 1px solid var(--linea);
+  background: var(--superficie);
+}
+
+/* Barra de cada panel: título a la izquierda, herramientas a la
+   derecha. Se mantiene fija mientras el cuerpo se desplaza. */
+.panelBarra {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 3rem;
+  padding: 0 0.9rem;
+  border-bottom: 1px solid var(--linea);
+  background: var(--superficie-alta);
+}
+
+.panelTitulo {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.panelCuerpo {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1.1rem 0.9rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(244, 240, 233, 0.16) transparent;
+}
+
+/* Pie anclado: la acción principal no se va con el scroll del
+   formulario, que es la queja clásica de los formularios largos. */
+.panelPie {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  padding: 0.8rem 0.9rem;
+  border-top: 1px solid var(--linea);
+  background: var(--superficie-alta);
+  /* La nota de ayuda cae bajo el botón al no caber a su lado: se
+     centra también para que las dos filas compartan el mismo eje. */
+  text-align: center;
 }
 
 .formulario {
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
-}
-
-/* Botón y su nota de ayuda en la misma línea: una fila menos. */
-.filaAccion {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  flex-wrap: wrap;
-  margin-top: 0.15rem;
+  gap: 1.1rem;
 }
 
 /* Campos cortos emparejados: acorta la columna del formulario. */
 .filaCampos {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.9rem;
 }
 
 .campo {
@@ -1118,12 +1171,296 @@
   color: var(--bone);
   font-family: inherit;
   font-size: 0.8125rem;
-  transition: border-color 0.2s var(--ease);
+  transition:
+    border-color 0.2s var(--ease),
+    background 0.2s var(--ease);
+}
+
+.control::placeholder {
+  color: rgba(244, 240, 233, 0.32);
 }
 
 .control:focus {
   outline: none;
   border-color: var(--acento);
+  background: rgba(244, 240, 233, 0.05);
+}
+
+/* ---------- Selector desplegable ---------- */
+
+/* Envoltura posicionada: la lista cuelga de aquí, no del formulario. */
+.selector {
+  position: relative;
+}
+
+/* El disparador reusa .control para que el combo y los <input> del
+   mismo formulario compartan alto, filete y fondo. */
+.selectorBoton {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.selectorBoton:hover {
+  border-color: rgba(244, 240, 233, 0.22);
+}
+
+.selectorAbierto,
+.selectorBoton:focus-visible {
+  outline: none;
+  border-color: var(--acento);
+  background: rgba(244, 240, 233, 0.05);
+}
+
+.selectorValor {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selectorFlecha {
+  flex: 0 0 auto;
+  color: var(--muted-dim);
+  transition: transform 0.18s var(--ease), color 0.18s var(--ease);
+}
+
+.selectorBoton:hover .selectorFlecha {
+  color: var(--muted);
+}
+
+.selectorAbierto .selectorFlecha {
+  transform: rotate(180deg);
+  color: var(--acento);
+}
+
+/* La lista tapa lo que haya debajo, así que va opaca: sobre la
+   superficie translúcida del panel se leería el formulario detrás. */
+.selectorLista {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 15rem;
+  overflow-y: auto;
+  padding: 0.25rem;
+  border: 1px solid rgba(244, 240, 233, 0.14);
+  background: #14121a;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+  animation: selectorEntra 0.14s var(--ease);
+}
+
+.selectorListaArriba {
+  top: auto;
+  bottom: calc(100% + 4px);
+  animation-name: selectorEntraArriba;
+}
+
+@keyframes selectorEntra {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes selectorEntraArriba {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .selectorLista {
+    animation: none;
+  }
+
+  .selectorFlecha {
+    transition: none;
+  }
+}
+
+.selectorOpcion {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.6rem 0.5rem 0.7rem;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+/* Filete de acento a la izquierda, igual que en las fichas de tipo
+   documental: marca el recorrido sin repintar toda la fila. */
+.selectorOpcion::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--acento);
+  transform: scaleY(0);
+  transition: transform 0.14s var(--ease);
+}
+
+.selectorMarcada {
+  background: rgba(244, 240, 233, 0.05);
+  color: var(--bone);
+}
+
+.selectorMarcada::before {
+  transform: scaleY(1);
+}
+
+.selectorElegida {
+  color: var(--bone);
+}
+
+.selectorElegida.selectorMarcada {
+  background: var(--acento-suave);
+}
+
+.selectorTexto {
+  flex: 1;
+  min-width: 0;
+}
+
+.selectorVisto {
+  flex: 0 0 auto;
+  color: var(--acento);
+}
+
+/* ---------- Calendario ---------- */
+
+/* Pista del formato dentro del propio disparador: el día/mes/año se
+   lee antes de abrir, que es justo la duda con las fechas cortas. */
+.fechaPatron {
+  flex: 0 0 auto;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-dim);
+  transition: color 0.18s var(--ease);
+}
+
+.selectorBoton:hover .fechaPatron {
+  color: var(--muted);
+}
+
+.selectorAbierto .fechaPatron {
+  color: var(--acento);
+}
+
+.calendario {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 100%;
+  width: max-content;
+  padding: 0.6rem;
+  border: 1px solid rgba(244, 240, 233, 0.14);
+  background: #14121a;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+  animation: selectorEntra 0.14s var(--ease);
+}
+
+.calendarioBarra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.calendarioMes {
+  flex: 1;
+  text-align: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bone);
+}
+
+.calendarioPaso {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 1px solid var(--linea);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.18s var(--ease);
+}
+
+.calendarioPaso:hover {
+  border-color: rgba(244, 240, 233, 0.22);
+  color: var(--bone);
+}
+
+/* Encabezado y casillas comparten rejilla para que las columnas
+   queden a plomo con las iniciales de los días. */
+.calendarioSemana,
+.calendarioRejilla {
+  display: grid;
+  grid-template-columns: repeat(7, 2rem);
+  gap: 2px;
+}
+
+.calendarioSemana {
+  margin-bottom: 2px;
+  text-align: center;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--muted-dim);
+}
+
+.calendarioDia {
+  height: 2rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: all 0.14s var(--ease);
+}
+
+.calendarioDia:hover {
+  background: rgba(244, 240, 233, 0.05);
+  color: var(--bone);
+}
+
+.calendarioDia:focus-visible {
+  outline: none;
+  border-color: rgba(244, 240, 233, 0.3);
+  color: var(--bone);
+}
+
+.calendarioElegido {
+  background: var(--acento-suave);
+  border-color: var(--acento);
+  color: var(--bone);
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calendario {
+    animation: none;
+  }
 }
 
 textarea.control {
@@ -1134,24 +1471,37 @@ textarea.control {
 
 .selectorTipos {
   display: grid;
-  /* Fichas compactas en 3 columnas: 2 filas en lugar de 3, y la
-     descripción se muestra solo para el tipo elegido. */
   grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
   grid-auto-rows: 1fr;
-  gap: 0.45rem;
+  gap: 0.4rem;
 }
 
+/* Ficha de tipo documental: el estado activo se marca con un filete
+   de acento a la izquierda, no solo con color de borde. */
 .tipoOpcion {
+  position: relative;
   display: flex;
   align-items: center;
-  min-height: 2.75rem;
-  padding: 0.5rem 0.7rem;
+  min-height: 2.6rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.65rem;
   border: 1px solid var(--linea);
   background: transparent;
   color: var(--muted);
   text-align: left;
   cursor: pointer;
   transition: all 0.18s var(--ease);
+}
+
+.tipoOpcion::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--acento);
+  transform: scaleY(0);
+  transition: transform 0.18s var(--ease);
 }
 
 .tipoOpcion:hover {
@@ -1165,10 +1515,18 @@ textarea.control {
   color: var(--bone);
 }
 
+.tipoActivo::before {
+  transform: scaleY(1);
+}
+
+/* El rótulo más largo ("Carta institucional") marca el tamaño: la
+   ficha es de una sola línea, así que el texto no puede partirse. */
 .tipoNombre {
   display: block;
-  font-size: 0.8125rem;
+  font-size: 0.6875rem;
   font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
 }
 
 /* Descripción del tipo seleccionado: una sola línea bajo la rejilla. */
@@ -1179,54 +1537,104 @@ textarea.control {
   color: var(--muted-dim);
 }
 
-.sugerencia {
+/* ---------- Panel de la hoja ---------- */
+
+/* Estado del documento en la barra: cifras tabulares para que el
+   correlativo no baile al incrementarse. */
+.estadoDoc {
   display: flex;
-  align-items: flex-start;
-  flex: none;
-  gap: 0.55rem;
-  padding: 0.7rem 0.8rem;
-  border-left: 2px solid var(--acento);
-  background: var(--acento-suave);
-  font-size: 0.75rem;
-  line-height: 1.55;
-  color: rgba(244, 240, 233, 0.8);
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
 }
 
-/* Vista previa: hoja clara sobre la consola oscura */
-
-.vistaPrevia {
-  position: sticky;
-  top: 5.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  /* Altura fija de pantalla: la hoja acompaña al formulario en lugar de
-     dejar un hueco muerto debajo. */
-  height: calc(100dvh - 7rem);
-  min-height: 28rem;
+.estadoDocVacio {
+  color: var(--muted-dim);
 }
 
-.hojaMarco {
+.estadoTexto {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.herramientas {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 0 0 auto;
+}
+
+/* Botón de herramienta: compacto, y en pantallas estrechas conserva
+   solo el icono para no partir la barra en dos líneas. */
+.herramienta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.18s var(--ease);
+}
+
+.herramienta:hover:not(:disabled) {
+  border-color: var(--linea);
+  background: rgba(244, 240, 233, 0.05);
+  color: var(--bone);
+}
+
+.herramienta:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.herramienta:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.herramientaHecha {
+  color: var(--acento);
+}
+
+/* Lienzo: fondo más profundo que el panel para que la hoja clara
+   flote encima con contraste real. */
+.lienzo {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow: auto;
-  padding: 1rem;
-  border: 1px solid var(--linea);
-  background: var(--superficie);
+  overflow-y: auto;
+  padding: clamp(0.9rem, 2vw, 1.6rem);
+  background:
+    radial-gradient(80% 55% at 50% 0%, rgba(155, 140, 245, 0.05), transparent 70%),
+    rgba(8, 7, 10, 0.5);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(244, 240, 233, 0.16) transparent;
 }
 
 .hoja {
   position: relative;
-  flex: none;
+  max-width: 46rem;
+  margin: 0 auto;
   padding: clamp(1.5rem, 3vw, 2.75rem);
   background: #f7f4ee;
   color: #1a1a1c;
   box-shadow: 0 30px 60px -25px rgba(0, 0, 0, 0.9);
   font-size: 0.8125rem;
   line-height: 1.75;
-  min-height: 26rem;
+  animation: hojaEntra 0.45s var(--ease) both;
 }
 
 .hojaCinta {
@@ -1343,57 +1751,204 @@ textarea.control {
   color: #26262a;
 }
 
-.hojaVacia {
-  display: grid;
-  place-items: center;
-  flex: 1;
-  min-height: 20rem;
-  padding: 2rem;
-  border: 1px dashed var(--linea);
-  text-align: center;
-  color: var(--muted-dim);
-  font-size: 0.8125rem;
-  line-height: 1.7;
-}
+/* ---------- Hoja fantasma: vacío y carga ---------- */
 
-.trabajando {
+/* El vacío y la carga comparten la forma real del documento. El
+   usuario ve la silueta de lo que va a recibir en lugar de una caja
+   punteada, y al generar no hay salto de layout: la silueta se
+   rellena. */
+.fantasma {
+  position: relative;
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  min-height: 20rem;
-  color: var(--muted);
-  font-size: 0.8125rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  width: 100%;
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 2.75rem);
+  background: rgba(244, 240, 233, 0.02);
+  border: 1px solid var(--linea);
 }
 
-.esqueleto {
-  width: 70%;
-  height: 8px;
+/* Envoltorios de los dos estados sin hoja: ambos ceden su altura a la
+   silueta para que llene la tarjeta. */
+.lienzoVacio,
+.lienzoCargando {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.fantasmaEncabezado {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--linea);
+}
+
+.fantasmaEscudo {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+}
+
+.fantasmaMembrete {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  flex: 1;
+}
+
+/* Filas de metadatos, con la misma rejilla que el <dl> de la hoja. */
+.fantasmaCampos {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Los párrafos se separan hasta ocupar el alto libre: la silueta llena
+   la tarjeta sin estirar las líneas ni inventar contenido. */
+.fantasmaCuerpo {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.1rem;
+}
+
+.fantasmaParrafo {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.fantasmaFirma {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 17rem;
+  margin-top: 1.75rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--linea);
+}
+
+.barraFantasma {
+  flex: 0 0 auto;
+  height: 9px;
+  background: rgba(244, 240, 233, 0.07);
+}
+
+.fantasmaEscudo,
+.fantasmaTitulo {
+  background: rgba(244, 240, 233, 0.07);
+}
+
+.fantasmaTitulo {
+  flex: 0 0 auto;
+  height: 13px;
+  width: 58%;
+  margin: 0 auto 1.4rem;
+}
+
+/* La animación solo corre mientras el agente redacta: en el estado
+   vacío la silueta permanece quieta para no simular actividad. */
+.fantasmaActiva .barraFantasma,
+.fantasmaActiva .fantasmaEscudo,
+.fantasmaActiva .fantasmaTitulo {
   background: linear-gradient(
     90deg,
-    rgba(244, 240, 233, 0.06),
-    rgba(155, 140, 245, 0.25),
-    rgba(244, 240, 233, 0.06)
+    rgba(244, 240, 233, 0.05),
+    rgba(155, 140, 245, 0.22),
+    rgba(244, 240, 233, 0.05)
   );
   background-size: 200% 100%;
-  animation: barrido 1.2s linear infinite;
+  animation: barrido 1.4s linear infinite;
 }
 
-.esqueleto:nth-child(3) {
-  width: 55%;
-}
-.esqueleto:nth-child(4) {
-  width: 62%;
+/* Mensaje del estado vacío, sobre la silueta. */
+.lienzoVacio {
+  position: relative;
 }
 
-.accionesHoja {
+.mensajeVacio {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  padding: 1.5rem;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* Velo radial: separa el mensaje de las barras que ahora quedan
+   detrás, sin tapar la silueta. */
+.mensajeVacio::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    46% 26% at 50% 50%,
+    rgba(10, 9, 13, 0.94) 0%,
+    rgba(10, 9, 13, 0.82) 55%,
+    transparent 100%
+  );
+}
+
+.mensajeVacioTitulo,
+.mensajeVacioTexto {
+  position: relative;
+}
+
+.mensajeVacioTitulo {
+  font-family: var(--font-display), sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.mensajeVacioTexto {
+  max-width: 26ch;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--muted-dim);
+}
+
+/* Anuncio para lectores de pantalla: el estado de carga se comunica
+   por texto, no solo por la silueta animada. */
+.soloLectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes hojaEntra {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ---------- Animaciones ---------- */
@@ -1437,9 +1992,21 @@ textarea.control {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .vistaPrevia {
-    position: static;
+  /* En una sola columna los paneles dejan de compartir altura: cada
+     uno crece con su contenido y el scroll vuelve a ser el de la
+     página, no el de cada panel. */
+  .panel {
     height: auto;
+    max-height: none;
+  }
+
+  .panelCuerpo,
+  .lienzo {
+    overflow: visible;
+  }
+
+  .lienzo {
+    min-height: 26rem;
   }
 }
 
@@ -1527,12 +2094,30 @@ textarea.control {
   }
 }
 
+@media (max-width: 560px) {
+  .herramienta {
+    padding: 0.45rem 0.5rem;
+  }
+
+  .herramientaTexto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .graficoLinea,
   .graficoRelleno,
   .barraRelleno,
   .medidorRelleno,
-  .esqueleto {
+  .hoja,
+  .fantasmaActiva .barraFantasma,
+  .fantasmaActiva .fantasmaEscudo,
+  .fantasmaActiva .fantasmaTitulo {
     animation: none !important;
     stroke-dashoffset: 0;
     opacity: 1;

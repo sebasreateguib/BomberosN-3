@@ -9,7 +9,9 @@ import {
   type Plantilla,
 } from "@/lib/datos-demo";
 import { descargarDocumentoPdf } from "@/lib/pdf-documento";
-import { IconChispa, IconCopiar, IconDescarga, IconRedactar } from "../iconos";
+import { IconCopiar, IconDescarga, IconRedactar } from "../iconos";
+import { Selector } from "../Selector";
+import { SelectorFecha, formatearFecha } from "../SelectorFecha";
 import styles from "../panel.module.css";
 
 type Generado = {
@@ -21,12 +23,77 @@ type Generado = {
 
 const CORRELATIVO_INICIAL = 135;
 
+// Anchos de las barras, agrupadas como los párrafos de la hoja real.
+const FANTASMA_CAMPOS = ["58%", "82%", "44%", "94%", "36%", "51%"];
+const FANTASMA_PARRAFOS = [
+  ["96%", "91%", "97%", "68%"],
+  ["93%", "98%", "89%", "94%", "54%"],
+  ["95%", "87%", "72%"],
+];
+
+/**
+ * Silueta del documento. La usan el estado vacío y el de carga: en
+ * vacío queda quieta y sirve de anticipo de la forma; mientras el
+ * agente redacta se anima. Reproduce la estructura de la hoja real
+ * (membrete, número, metadatos, cuerpo y firma) y ocupa el alto
+ * completo de la tarjeta, así que al llegar el documento no hay
+ * salto de layout.
+ */
+function HojaFantasma({ animada }: { animada: boolean }) {
+  return (
+    <div
+      className={`${styles.fantasma} ${animada ? styles.fantasmaActiva : ""}`}
+      aria-hidden="true"
+    >
+      <div className={styles.fantasmaEncabezado}>
+        <span className={styles.fantasmaEscudo} />
+        <span className={styles.fantasmaMembrete}>
+          <span className={styles.barraFantasma} style={{ width: "62%" }} />
+          <span className={styles.barraFantasma} style={{ width: "44%" }} />
+        </span>
+      </div>
+
+      <span className={styles.fantasmaTitulo} />
+
+      <div className={styles.fantasmaCampos}>
+        {FANTASMA_CAMPOS.map((ancho, i) => (
+          <span
+            key={i}
+            className={styles.barraFantasma}
+            style={{ width: ancho }}
+          />
+        ))}
+      </div>
+
+      <div className={styles.fantasmaCuerpo}>
+        {FANTASMA_PARRAFOS.map((parrafo, i) => (
+          <div key={i} className={styles.fantasmaParrafo}>
+            {parrafo.map((ancho, j) => (
+              <span
+                key={j}
+                className={styles.barraFantasma}
+                style={{ width: ancho }}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+
+      <div className={styles.fantasmaFirma}>
+        <span className={styles.barraFantasma} style={{ width: "74%" }} />
+        <span className={styles.barraFantasma} style={{ width: "92%" }} />
+      </div>
+    </div>
+  );
+}
+
 export function Generador({ autor }: { autor: string }) {
   const [plantilla, setPlantilla] = useState<Plantilla>(PLANTILLAS[0]);
   const [destinatario, setDestinatario] = useState(DESTINATARIOS[0]);
   const [asunto, setAsunto] = useState("");
   const [antecedentes, setAntecedentes] = useState("");
-  const [fecha, setFecha] = useState("05 de agosto de 2026");
+  // La fecha viaja en ISO y solo se traduce a día/mes/año al mostrarla.
+  const [fecha, setFecha] = useState("2026-08-05");
   const [trabajando, setTrabajando] = useState(false);
   const [generado, setGenerado] = useState<Generado | null>(null);
   const [correlativo, setCorrelativo] = useState(CORRELATIVO_INICIAL);
@@ -43,7 +110,12 @@ export function Generador({ autor }: { autor: string }) {
     // La redacción real la haría el modelo en el servidor; aquí se simula
     // el tiempo de respuesta para poder mostrar el flujo completo.
     window.setTimeout(() => {
-      const datos: DatosGeneracion = { destinatario, asunto, antecedentes, fecha };
+      const datos: DatosGeneracion = {
+        destinatario,
+        asunto,
+        antecedentes,
+        fecha: formatearFecha(fecha),
+      };
       setGenerado({
         numero: plantilla.encabezado.replace(
           "{n}",
@@ -95,114 +167,155 @@ export function Generador({ autor }: { autor: string }) {
     }
   };
 
+  const estado = trabajando
+    ? "Redactando…"
+    : generado
+      ? generado.numero
+      : "Sin documento";
+
   return (
     <div className={styles.generador}>
-      {/* ---------- Formulario ---------- */}
-      <section className={styles.tarjeta}>
-        <div className={styles.tarjetaEncabezado}>
-          <h2 className={styles.tarjetaTitulo}>Datos del documento</h2>
-          <span className={styles.tarjetaNota}>Paso 1 de 2</span>
+      {/* ---------- Panel de datos ---------- */}
+      <section className={styles.panel}>
+        <div className={styles.panelBarra}>
+          <h2 className={styles.panelTitulo}>Datos del documento</h2>
         </div>
 
-        <div className={styles.formulario}>
-          <div className={styles.campo}>
-            <span className={styles.campoEtiqueta}>Tipo de documento</span>
-            <div className={styles.selectorTipos}>
-              {PLANTILLAS.map((opcion) => (
-                <button
-                  key={opcion.id}
-                  type="button"
-                  className={`${styles.tipoOpcion} ${
-                    plantilla.id === opcion.id ? styles.tipoActivo : ""
-                  }`}
-                  onClick={() => setPlantilla(opcion)}
-                  aria-pressed={plantilla.id === opcion.id}
-                  title={opcion.descripcion}
-                >
-                  <span className={styles.tipoNombre}>{opcion.nombre}</span>
-                </button>
-              ))}
-            </div>
-            <span className={styles.tipoDetalle}>{plantilla.descripcion}</span>
-          </div>
-
-          <div className={styles.filaCampos}>
-            <label className={styles.campo}>
-              <span className={styles.campoEtiqueta}>Destinatario</span>
-              <select
-                className={styles.control}
-                value={destinatario}
-                onChange={(evento) => setDestinatario(evento.target.value)}
-              >
-                {DESTINATARIOS.map((opcion) => (
-                  <option key={opcion} value={opcion}>
-                    {opcion}
-                  </option>
+        <div className={styles.panelCuerpo}>
+          <div className={styles.formulario}>
+            <div className={styles.campo}>
+              <span className={styles.campoEtiqueta}>Tipo de documento</span>
+              <div className={styles.selectorTipos}>
+                {PLANTILLAS.map((opcion) => (
+                  <button
+                    key={opcion.id}
+                    type="button"
+                    className={`${styles.tipoOpcion} ${
+                      plantilla.id === opcion.id ? styles.tipoActivo : ""
+                    }`}
+                    onClick={() => setPlantilla(opcion)}
+                    aria-pressed={plantilla.id === opcion.id}
+                    title={opcion.descripcion}
+                  >
+                    <span className={styles.tipoNombre}>{opcion.nombre}</span>
+                  </button>
                 ))}
-              </select>
+              </div>
+              <span className={styles.tipoDetalle}>{plantilla.descripcion}</span>
+            </div>
+
+            <div className={styles.filaCampos}>
+              <Selector
+                etiqueta="Destinatario"
+                opciones={DESTINATARIOS}
+                valor={destinatario}
+                onCambio={setDestinatario}
+              />
+
+              <SelectorFecha
+                etiqueta="Fecha del documento"
+                valor={fecha}
+                onCambio={setFecha}
+              />
+            </div>
+
+            <label className={styles.campo}>
+              <span className={styles.campoEtiqueta}>Motivo o asunto</span>
+              <input
+                className={styles.control}
+                value={asunto}
+                onChange={(evento) => setAsunto(evento.target.value)}
+                placeholder="Informe de asistencia del personal, julio 2026"
+              />
             </label>
 
             <label className={styles.campo}>
-              <span className={styles.campoEtiqueta}>Fecha del documento</span>
-              <input
+              <span className={styles.campoEtiqueta}>
+                Antecedentes (opcional)
+              </span>
+              <textarea
                 className={styles.control}
-                value={fecha}
-                onChange={(evento) => setFecha(evento.target.value)}
+                value={antecedentes}
+                onChange={(evento) => setAntecedentes(evento.target.value)}
+                placeholder="Información previa que el agente debe considerar al redactar."
               />
             </label>
           </div>
+        </div>
 
-          <label className={styles.campo}>
-            <span className={styles.campoEtiqueta}>Motivo o asunto</span>
-            <input
-              className={styles.control}
-              value={asunto}
-              onChange={(evento) => setAsunto(evento.target.value)}
-              placeholder="Informe de asistencia del personal — julio 2026"
-            />
-          </label>
+        <div className={styles.panelPie}>
+          <button
+            type="button"
+            className={styles.botonPrimario}
+            onClick={generar}
+            disabled={!listo || trabajando}
+          >
+            <IconRedactar width={15} height={15} />
+            {trabajando ? "Generando…" : "Generar documento"}
+          </button>
 
-          <label className={styles.campo}>
-            <span className={styles.campoEtiqueta}>Antecedentes (opcional)</span>
-            <textarea
-              className={styles.control}
-              value={antecedentes}
-              onChange={(evento) => setAntecedentes(evento.target.value)}
-              placeholder="Información previa que el agente debe considerar al redactar."
-            />
-          </label>
-
-          <div className={styles.filaAccion}>
-            <button
-              type="button"
-              className={styles.botonPrimario}
-              onClick={generar}
-              disabled={!listo || trabajando}
-            >
-              <IconRedactar width={15} height={15} />
-              {trabajando ? "Generando…" : "Generar documento"}
-            </button>
-
-            {!listo && (
-              <span className={styles.tarjetaNota}>
-                Indique el motivo o asunto para habilitar la generación.
-              </span>
-            )}
-          </div>
+          {!listo && (
+            <span className={styles.tipoDetalle} style={{ marginTop: 0 }}>
+              Indique el motivo o asunto para habilitar la generación.
+            </span>
+          )}
         </div>
       </section>
 
-      {/* ---------- Vista previa ---------- */}
-      <section className={styles.vistaPrevia}>
-        <div className={styles.hojaMarco}>
-          {trabajando ? (
-            <div className={styles.trabajando}>
-              <span>El agente está redactando</span>
-              <span className={styles.esqueleto} />
-              <span className={styles.esqueleto} />
-              <span className={styles.esqueleto} />
-            </div>
-          ) : generado ? (
+      {/* ---------- Panel de la hoja ---------- */}
+      <section className={styles.panel}>
+        {/* Las herramientas viven en la barra y están siempre presentes,
+            deshabilitadas hasta que haya documento: así el panel no cambia
+            de alto al generar. */}
+        <div className={styles.panelBarra}>
+          <span
+            className={`${styles.estadoDoc} ${
+              generado ? "" : styles.estadoDocVacio
+            }`}
+          >
+            <span className={styles.estadoTexto}>{estado}</span>
+          </span>
+
+          <div className={styles.herramientas}>
+            <button
+              type="button"
+              className={`${styles.herramienta} ${
+                copiado ? styles.herramientaHecha : ""
+              }`}
+              onClick={copiar}
+              disabled={!generado || trabajando}
+            >
+              <IconCopiar width={14} height={14} />
+              <span className={styles.herramientaTexto}>
+                {copiado ? "Copiado" : "Copiar"}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              className={styles.herramienta}
+              onClick={descargar}
+              disabled={!generado || trabajando || descargando}
+            >
+              <IconDescarga width={14} height={14} />
+              <span className={styles.herramientaTexto}>
+                {descargando ? "Generando…" : "PDF"}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              className={styles.herramienta}
+              onClick={() => setGenerado(null)}
+              disabled={!generado || trabajando}
+            >
+              <span className={styles.herramientaTexto}>Nuevo</span>
+            </button>
+          </div>
+        </div>
+
+        <div className={styles.lienzo}>
+          {generado && !trabajando ? (
             <article className={styles.hoja}>
               <div className={styles.hojaCinta} aria-hidden="true">
                 <span />
@@ -257,49 +370,32 @@ export function Generador({ autor }: { autor: string }) {
                 Compañía de Bomberos Voluntarios France N° 3
               </div>
             </article>
-          ) : (
-            <div className={styles.hojaVacia}>
-              <span>
-                Complete los datos y presione <strong>Generar documento</strong>.
-                <br />
-                El documento aparecerá aquí, listo para revisar, ajustar y
-                descargar.
+          ) : trabajando ? (
+            <div
+              className={styles.lienzoCargando}
+              role="status"
+              aria-live="polite"
+            >
+              <span className={styles.soloLectores}>
+                El agente está redactando el documento.
               </span>
+              <HojaFantasma animada />
+            </div>
+          ) : (
+            <div className={styles.lienzoVacio}>
+              <HojaFantasma animada={false} />
+              <div className={styles.mensajeVacio}>
+                <span className={styles.mensajeVacioTitulo}>
+                  Sin documento
+                </span>
+                <span className={styles.mensajeVacioTexto}>
+                  Complete los datos y genere el documento. Aparecerá aquí para
+                  revisarlo y descargarlo.
+                </span>
+              </div>
             </div>
           )}
         </div>
-
-        <p className={styles.sugerencia}>
-          <IconChispa width={14} height={14} />
-          El agente aplica los formatos y lineamientos institucionales de la
-          Compañía: numeración correlativa, estructura reglamentaria y fórmulas
-          de cortesía según el tipo documental.
-        </p>
-
-        {generado && !trabajando && (
-          <div className={styles.accionesHoja}>
-            <button type="button" className={styles.botonSecundario} onClick={copiar}>
-              <IconCopiar width={14} height={14} />
-              {copiado ? "Copiado" : "Copiar texto"}
-            </button>
-            <button
-              type="button"
-              className={styles.botonSecundario}
-              onClick={descargar}
-              disabled={descargando}
-            >
-              <IconDescarga width={14} height={14} />
-              {descargando ? "Generando PDF…" : "Descargar PDF"}
-            </button>
-            <button
-              type="button"
-              className={styles.botonSecundario}
-              onClick={() => setGenerado(null)}
-            >
-              Nuevo documento
-            </button>
-          </div>
-        )}
       </section>
     </div>
   );

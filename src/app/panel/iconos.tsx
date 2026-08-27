@@ -165,3 +165,19 @@ export function IconCarpeta(p: Props) {
     </svg>
   );
 }
+
+export function IconChevron(p: Props) {
+  return (
+    <svg {...base} {...p} aria-hidden="true">
+      <path d="m7 10 5 5 5-5" />
+    </svg>
+  );
+}
+
+export function IconCheck(p: Props) {
+  return (
+    <svg {...base} {...p} aria-hidden="true">
+      <path d="m5 12.5 4.5 4.5L19 7" />
+    </svg>
+  );
+}
