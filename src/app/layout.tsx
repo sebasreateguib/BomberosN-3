@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     template: "%s · France N°3",
   },
   description:
-    "Plataforma de gestión institucional de la Compañía de Bomberos Voluntarios France N°3 — Mesa de Partes Virtual, Agente IA documental y Dashboard Ejecutivo.",
+    "Plataforma de gestión institucional de la Compañía de Bomberos Voluntarios France N°3 — Bandeja Documental y Dashboard Ejecutivo.",
 };
 
 export const viewport: Viewport = {

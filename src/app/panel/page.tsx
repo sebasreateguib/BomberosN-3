@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function Panel() {
-  redirect("/panel/mesa-de-partes");
+  redirect("/panel/bandeja-documental");
 }

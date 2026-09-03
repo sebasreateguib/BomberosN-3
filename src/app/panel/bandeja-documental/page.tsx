@@ -11,7 +11,7 @@ import { Grafico } from "./Grafico";
 import { IconFlecha } from "../iconos";
 import styles from "../panel.module.css";
 
-export const metadata: Metadata = { title: "Mesa de Partes Virtual" };
+export const metadata: Metadata = { title: "Bandeja Documental" };
 
 const TONOS: Record<string, string> = {
   ingresos: "#4a7ade",
@@ -47,16 +47,15 @@ export default function MesaDePartes() {
       <header className={styles.encabezado}>
         <div>
           <p className={styles.migas}>
-            Proyecto 1 <span data-acento="">·</span> Sistema inteligente
+            Proyecto 1 <span data-acento="">·</span> Gestión documental
           </p>
-          <h1 className={styles.titulo}>Mesa de Partes Virtual</h1>
+          <h1 className={styles.titulo}>Bandeja Documental</h1>
           <p className={styles.subtitulo}>
             Registro, seguimiento y control de toda la documentación que
-            ingresa y sale de la Compañía, con trazabilidad total y apoyo de
-            inteligencia artificial.
+            ingresa y sale de la Compañía, con trazabilidad total.
           </p>
         </div>
-        <Link className={styles.botonPrimario} href="/panel/mesa-de-partes/documentos">
+        <Link className={styles.botonPrimario} href="/panel/bandeja-documental/documentos">
           Registrar ingreso
           <IconFlecha width={15} height={15} />
         </Link>
@@ -144,7 +143,7 @@ export default function MesaDePartes() {
       <section className={styles.tarjeta}>
         <div className={styles.tarjetaEncabezado}>
           <h2 className={styles.tarjetaTitulo}>Documentos recientes</h2>
-          <Link className={styles.botonSecundario} href="/panel/mesa-de-partes/documentos">
+          <Link className={styles.botonSecundario} href="/panel/bandeja-documental/documentos">
             Ver bandeja completa
           </Link>
         </div>
@@ -167,7 +166,7 @@ export default function MesaDePartes() {
                   <td>
                     <Link
                       className={styles.celdaNumero}
-                      href={`/panel/mesa-de-partes/documentos/${documento.id}`}
+                      href={`/panel/bandeja-documental/documentos/${documento.id}`}
                     >
                       {documento.numero}
                     </Link>

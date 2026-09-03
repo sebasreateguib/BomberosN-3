@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { obtenerSesion } from "@/lib/sesion";
 import { salir } from "./actions";
 import { Sidebar } from "./Sidebar";
-import { IconBuscar, IconCampana, IconSalir } from "./iconos";
+import { IconBuscar, IconSalir } from "./iconos";
 import styles from "./panel.module.css";
 
 export default async function PanelLayout({
@@ -33,15 +33,6 @@ export default async function PanelLayout({
           </label>
 
           <div className={styles.acciones}>
-            <button
-              type="button"
-              className={styles.iconoBoton}
-              aria-label="Notificaciones"
-            >
-              <IconCampana width={16} height={16} />
-              <span className={styles.avisoPunto} />
-            </button>
-
             <div className={styles.usuario}>
               <span className={styles.avatar}>{bombero.iniciales}</span>
               <span className={styles.usuarioMeta}>

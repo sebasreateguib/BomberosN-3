@@ -3,7 +3,7 @@ import { DOCUMENTOS } from "@/lib/datos-demo";
 import { TablaDocumentos } from "./TablaDocumentos";
 import styles from "../../panel.module.css";
 
-export const metadata: Metadata = { title: "Bandeja documental" };
+export const metadata: Metadata = { title: "Documentos" };
 
 export default function Bandeja() {
   return (
@@ -11,9 +11,9 @@ export default function Bandeja() {
       <header className={styles.encabezado}>
         <div>
           <p className={styles.migas}>
-            Mesa de Partes <span data-acento="">·</span> Bandeja
+            Bandeja Documental <span data-acento="">·</span> Listado
           </p>
-          <h1 className={styles.titulo}>Bandeja documental</h1>
+          <h1 className={styles.titulo}>Documentos</h1>
           <p className={styles.subtitulo}>
             {DOCUMENTOS.length} documentos registrados en el período. Cada uno
             cuenta con un código único que permite conocer su estado, ubicación

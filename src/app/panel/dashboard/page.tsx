@@ -1,31 +1,16 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import {
-  ALERTAS_IA,
   EMERGENCIAS_DISTRITO,
   EMERGENCIAS_TIPO,
   KPIS_EJECUTIVO,
   UNIDADES,
 } from "@/lib/datos-demo";
 import { Combo, Dona } from "./Graficos";
-import { IconChispa, IconFlecha } from "../iconos";
+import { IconFlecha } from "../iconos";
 import styles from "../panel.module.css";
 
 export const metadata: Metadata = { title: "Dashboard ejecutivo" };
-
-const CLASES_ALERTA = {
-  critica: styles.alertaCritica,
-  prediccion: styles.alertaPrediccion,
-  recomendacion: styles.alertaRecomendacion,
-  aviso: styles.alertaAviso,
-};
-
-const SELLOS = {
-  critica: "Anomalía",
-  prediccion: "Predicción",
-  recomendacion: "Recomendación",
-  aviso: "Aviso",
-};
 
 const CLASES_UNIDAD = {
   Operativa: styles.segOperativa,
@@ -45,7 +30,7 @@ export default function DashboardEjecutivo() {
       <header className={styles.encabezado}>
         <div>
           <p className={styles.migas}>
-            Proyecto 3 <span data-acento="">·</span> Tablero de control
+            Proyecto 2 <span data-acento="">·</span> Tablero de control
           </p>
           <h1 className={styles.titulo}>Dashboard ejecutivo</h1>
           <p className={styles.subtitulo}>
@@ -206,29 +191,6 @@ export default function DashboardEjecutivo() {
           <p className={`${styles.tarjetaNota} ${styles.alFondo}`}>
             Disponibilidad de conductores: 9 de 12 habilitados en turno.
           </p>
-        </article>
-
-        <article className={styles.tarjeta}>
-          <div className={styles.tarjetaEncabezado}>
-            <h2 className={styles.tarjetaTitulo}>Análisis predictivo</h2>
-            <span className={styles.tarjetaNota}>IA · últimas 24 h</span>
-          </div>
-
-          <div className={styles.alertas}>
-            {ALERTAS_IA.map((alerta) => (
-              <article
-                key={alerta.titulo}
-                className={`${styles.alertaItem} ${CLASES_ALERTA[alerta.nivel]}`}
-              >
-                <h3 className={styles.alertaTitulo}>
-                  <IconChispa width={13} height={13} />
-                  {alerta.titulo}
-                  <span className={styles.alertaSello}>{SELLOS[alerta.nivel]}</span>
-                </h3>
-                <p className={styles.alertaDetalle}>{alerta.detalle}</p>
-              </article>
-            ))}
-          </div>
         </article>
       </section>
 

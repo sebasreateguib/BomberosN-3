@@ -4,14 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { EstadoCompania } from "./EstadoCompania";
 import {
   IconBandeja,
   IconCarpeta,
   IconEngranaje,
   IconGrafico,
-  IconHistorial,
   IconPersonal,
-  IconRedactar,
   IconTablero,
   IconUnidad,
 } from "./iconos";
@@ -27,35 +26,19 @@ type Enlace = {
 
 const GRUPOS: { titulo: string; tono: string; enlaces: Enlace[] }[] = [
   {
-    titulo: "Mesa de Partes",
+    titulo: "Bandeja Documental",
     tono: "#4a7ade",
     enlaces: [
       {
-        href: "/panel/mesa-de-partes",
+        href: "/panel/bandeja-documental",
         texto: "Resumen",
         icono: <IconTablero />,
       },
       {
-        href: "/panel/mesa-de-partes/documentos",
-        texto: "Bandeja documental",
+        href: "/panel/bandeja-documental/documentos",
+        texto: "Documentos",
         icono: <IconBandeja />,
         contador: 27,
-      },
-    ],
-  },
-  {
-    titulo: "Agente IA",
-    tono: "#9b8cf5",
-    enlaces: [
-      {
-        href: "/panel/agente-ia",
-        texto: "Redactar documento",
-        icono: <IconRedactar />,
-      },
-      {
-        href: "/panel/agente-ia/historial",
-        texto: "Historial generado",
-        icono: <IconHistorial />,
       },
     ],
   },
@@ -199,6 +182,8 @@ export function Sidebar() {
           </div>
         ))}
       </nav>
+
+      <EstadoCompania />
 
       <div className={styles.sidebarPie}>
         Maqueta de demostración · Datos ficticios

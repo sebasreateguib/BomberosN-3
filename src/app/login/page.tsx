@@ -94,10 +94,9 @@ export default function LoginPage() {
             className={`${styles.lede} ${styles.enter}`}
             style={{ "--d": "360ms" } as React.CSSProperties}
           >
-            Plataforma de <strong>gestión institucional</strong>: mesa de partes
-            virtual con trazabilidad total, redacción documental asistida por
-            inteligencia artificial y tablero de mando para la Jefatura y el
-            Cuadro de Oficiales.
+            Plataforma de <strong>gestión institucional</strong>: bandeja
+            documental con trazabilidad total y tablero de mando para la
+            Jefatura y el Cuadro de Oficiales.
           </p>
         </section>
 

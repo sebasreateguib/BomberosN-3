@@ -22,8 +22,11 @@ export const BOMBERO_DEMO: Bombero = {
   iniciales: "AV",
 };
 
+/** Dotación que cubre la guardia en curso, de un total habilitado. */
+export const GUARDIA_ACTUAL = { enServicio: 12, dotacion: 18 };
+
 /* ============================================================
-   Proyecto 1 — Mesa de Partes Virtual
+   Proyecto 1 — Bandeja Documental
    ============================================================ */
 
 export type EstadoDocumento =
@@ -64,8 +67,6 @@ export type Documento = {
   plazo: string;
   estado: EstadoDocumento;
   prioridad: "Alta" | "Media" | "Baja";
-  clasificacionIA: string;
-  confianzaIA: number;
   trazabilidad: Etapa[];
 };
 
@@ -80,13 +81,13 @@ const traza = (
       etapa: "Ingreso",
       hora: "08:42",
       responsable: responsableIngreso,
-      detalle: "Documento registrado en Mesa de Partes Virtual.",
+      detalle: "Documento registrado en la Bandeja Documental.",
     },
     {
       etapa: "Clasificación",
       hora: "08:44",
-      responsable: "Sistema · Clasificador IA",
-      detalle: "Tipo, prioridad y área asignados automáticamente.",
+      responsable: "Administración",
+      detalle: "Tipo, prioridad y área responsable asignados al registro.",
     },
     {
       etapa: "Derivación",
@@ -129,8 +130,6 @@ export const DOCUMENTOS: Documento[] = [
     plazo: "12/08/2026",
     estado: "Pendiente",
     prioridad: "Alta",
-    clasificacionIA: "Logística · Requerimiento",
-    confianzaIA: 96,
     trazabilidad: traza("Bomb. Quispe Alarcón", "Sección Logística", "04/08/2026", 3),
   },
   {
@@ -146,8 +145,6 @@ export const DOCUMENTOS: Documento[] = [
     plazo: "08/08/2026",
     estado: "Derivado",
     prioridad: "Media",
-    clasificacionIA: "Personal · Informe mensual",
-    confianzaIA: 93,
     trazabilidad: traza("Bomb. Rojas Medina", "Jefatura de Compañía", "04/08/2026", 3),
   },
   {
@@ -163,8 +160,6 @@ export const DOCUMENTOS: Documento[] = [
     plazo: "10/08/2026",
     estado: "Pendiente",
     prioridad: "Alta",
-    clasificacionIA: "Máquinas · Estado operativo",
-    confianzaIA: 91,
     trazabilidad: traza("Bomb. Chávez Núñez", "Jefatura de Compañía", "03/08/2026", 2),
   },
   {
@@ -180,8 +175,6 @@ export const DOCUMENTOS: Documento[] = [
     plazo: "09/08/2026",
     estado: "Atendido",
     prioridad: "Baja",
-    clasificacionIA: "Institucional · Agradecimiento",
-    confianzaIA: 88,
     trazabilidad: traza("Bomb. Salazar Pinto", "Jefatura de Compañía", "02/08/2026", 5),
   },
   {
@@ -197,8 +190,6 @@ export const DOCUMENTOS: Documento[] = [
     plazo: "05/08/2026",
     estado: "Atendido",
     prioridad: "Media",
-    clasificacionIA: "Operaciones · Cronograma",
-    confianzaIA: 97,
     trazabilidad: traza("Bomb. Rojas Medina", "Secciones", "01/08/2026", 5),
   },
   {
@@ -214,8 +205,6 @@ export const DOCUMENTOS: Documento[] = [
     plazo: "15/08/2026",
     estado: "En proceso",
     prioridad: "Media",
-    clasificacionIA: "Instrucción · Capacitación",
-    confianzaIA: 94,
     trazabilidad: traza("Bomb. Quispe Alarcón", "Sección Instrucción", "05/08/2026", 4),
   },
   {
@@ -231,8 +220,6 @@ export const DOCUMENTOS: Documento[] = [
     plazo: "13/08/2026",
     estado: "Pendiente",
     prioridad: "Media",
-    clasificacionIA: "Personal · Licencia",
-    confianzaIA: 90,
     trazabilidad: traza("Bomb. Salazar Pinto", "Jefatura de Compañía", "05/08/2026", 2),
   },
   {
@@ -248,8 +235,6 @@ export const DOCUMENTOS: Documento[] = [
     plazo: "12/08/2026",
     estado: "En proceso",
     prioridad: "Alta",
-    clasificacionIA: "Institucional · Acta",
-    confianzaIA: 98,
     trazabilidad: traza("Bomb. Chávez Núñez", "Cuadro de Oficiales", "05/08/2026", 4),
   },
   {
@@ -265,8 +250,6 @@ export const DOCUMENTOS: Documento[] = [
     plazo: "07/08/2026",
     estado: "Derivado",
     prioridad: "Alta",
-    clasificacionIA: "Operaciones · Coordinación externa",
-    confianzaIA: 95,
     trazabilidad: traza("Bomb. Rojas Medina", "Sección Operaciones", "31/07/2026", 3),
   },
   {
@@ -282,8 +265,6 @@ export const DOCUMENTOS: Documento[] = [
     plazo: "06/08/2026",
     estado: "Archivado",
     prioridad: "Baja",
-    clasificacionIA: "Administración · Reporte de consumo",
-    confianzaIA: 92,
     trazabilidad: traza("Bomb. Quispe Alarcón", "Administración", "30/07/2026", 5),
   },
   {
@@ -299,8 +280,6 @@ export const DOCUMENTOS: Documento[] = [
     plazo: "05/08/2026",
     estado: "Atendido",
     prioridad: "Alta",
-    clasificacionIA: "Administración · Plan de gestión",
-    confianzaIA: 99,
     trazabilidad: traza("Bomb. Salazar Pinto", "Jefatura de Compañía", "29/07/2026", 5),
   },
   {
@@ -316,8 +295,6 @@ export const DOCUMENTOS: Documento[] = [
     plazo: "02/08/2026",
     estado: "Archivado",
     prioridad: "Baja",
-    clasificacionIA: "Institucional · Disposición",
-    confianzaIA: 96,
     trazabilidad: traza("Bomb. Chávez Núñez", "Secciones", "28/07/2026", 5),
   },
 ];
@@ -348,223 +325,11 @@ export const DISTRIBUCION_TIPOS = [
   { tipo: "Otros", valor: 8 },
 ];
 
-/* ============================================================
-   Proyecto 2 — Agente de IA documental
-   ============================================================ */
-
-export type Plantilla = {
-  id: string;
-  nombre: string;
-  descripcion: string;
-  encabezado: string;
-  cuerpo: (datos: DatosGeneracion) => string[];
-  cierre: string;
-};
-
-export type DatosGeneracion = {
-  destinatario: string;
-  asunto: string;
-  antecedentes: string;
-  fecha: string;
-};
-
-/**
- * Pasa la primera letra a minúscula para encajar el asunto dentro de una
- * frase, sin arruinar siglas ni números romanos ("II semestre", "HAZMAT").
- */
-const enMinuscula = (texto: string) => {
-  const limpio = texto.trim();
-  if (!limpio) return limpio;
-  if (/^[A-ZÁÉÍÓÚÑ]{2}/.test(limpio)) return limpio;
-  return limpio[0].toLowerCase() + limpio.slice(1);
-};
-
-const parrafoCortesia =
-  "Es propicia la oportunidad para expresarle los sentimientos de mi especial consideración y estima.";
-
-export const PLANTILLAS: Plantilla[] = [
-  {
-    id: "oficio",
-    nombre: "Oficio",
-    descripcion: "Comunicación formal dirigida a autoridades o unidades externas.",
-    encabezado: "OFICIO N° {n}-2026-CBVP-F3/ADM",
-    cuerpo: ({ destinatario, asunto, antecedentes }) => [
-      `Tengo el agrado de dirigirme a usted, ${destinatario}, en el marco de las funciones administrativas de la Compañía de Bomberos Voluntarios France N° 3, con la finalidad de comunicarle lo referente a ${enMinuscula(asunto)}.`,
-      antecedentes
-        ? `Al respecto, y considerando ${enMinuscula(antecedentes)}, esta Jefatura ha dispuesto las acciones necesarias para su atención dentro de los plazos establecidos en el reglamento institucional.`
-        : "Al respecto, esta Jefatura ha dispuesto las acciones necesarias para su atención dentro de los plazos establecidos en el reglamento institucional.",
-      "En tal sentido, agradeceré disponer las coordinaciones que correspondan y remitir la respuesta a través de la Mesa de Partes Virtual de la Compañía.",
-      parrafoCortesia,
-    ],
-    cierre: "Atentamente,",
-  },
-  {
-    id: "nota-informativa",
-    nombre: "Nota Informativa",
-    descripcion: "Informe breve de un hecho o situación puntual a la superioridad.",
-    encabezado: "NOTA INFORMATIVA N° {n}-2026-CBVP-F3/ADM",
-    cuerpo: ({ destinatario, asunto, antecedentes }) => [
-      `Por medio de la presente, se pone en conocimiento de ${destinatario} la información correspondiente a ${enMinuscula(asunto)}.`,
-      antecedentes
-        ? `Antecedentes: ${antecedentes}`
-        : "Antecedentes: se trata de información de rutina generada por el área responsable.",
-      "La documentación de sustento se encuentra registrada en el sistema institucional y queda a disposición para su verificación.",
-    ],
-    cierre: "Es cuanto informo a usted para su conocimiento y fines.",
-  },
-  {
-    id: "informe",
-    nombre: "Informe",
-    descripcion: "Documento con análisis, conclusiones y recomendaciones.",
-    encabezado: "INFORME N° {n}-2026-CBVP-F3/ADM",
-    cuerpo: ({ destinatario, asunto, antecedentes }) => [
-      `I. OBJETO\nInformar a ${destinatario} sobre ${enMinuscula(asunto)}.`,
-      `II. ANTECEDENTES\n${antecedentes || "No se registran antecedentes previos sobre la materia."}`,
-      "III. ANÁLISIS\nRevisada la documentación y verificada la información con las secciones involucradas, se advierte que las acciones ejecutadas se ajustan a los lineamientos institucionales vigentes.",
-      "IV. CONCLUSIONES\nSe recomienda aprobar lo actuado y disponer el seguimiento mensual del indicador correspondiente.",
-    ],
-    cierre: "Es todo cuanto tengo que informar.",
-  },
-  {
-    id: "memorando",
-    nombre: "Memorando",
-    descripcion: "Disposición interna dirigida al personal de la Compañía.",
-    encabezado: "MEMORANDO N° {n}-2026-CBVP-F3/ADM",
-    cuerpo: ({ destinatario, asunto, antecedentes }) => [
-      `Se comunica a ${destinatario} la siguiente disposición referente a ${enMinuscula(asunto)}.`,
-      antecedentes
-        ? `Considerando ${enMinuscula(antecedentes)}, el cumplimiento de lo dispuesto es de carácter obligatorio a partir de la fecha.`
-        : "El cumplimiento de lo dispuesto es de carácter obligatorio a partir de la fecha.",
-      "Las secciones deberán reportar el cumplimiento a la Administración dentro de las 72 horas siguientes.",
-    ],
-    cierre: "Cúmplase.",
-  },
-  {
-    id: "carta",
-    nombre: "Carta institucional",
-    descripcion: "Comunicación protocolar con entidades y aliados.",
-    encabezado: "CARTA N° {n}-2026-CBVP-F3/ADM",
-    cuerpo: ({ destinatario, asunto, antecedentes }) => [
-      `Estimado(a) ${destinatario}:`,
-      `Reciba el cordial saludo de la Compañía de Bomberos Voluntarios France N° 3. El motivo de la presente es ${enMinuscula(asunto)}.`,
-      antecedentes ||
-        "Nuestra institución reitera su disposición para continuar colaborando en beneficio de la comunidad.",
-      parrafoCortesia,
-    ],
-    cierre: "Cordialmente,",
-  },
-  {
-    id: "acta",
-    nombre: "Acta",
-    descripcion: "Registro formal de acuerdos de reunión.",
-    encabezado: "ACTA N° {n}-2026-CBVP-F3/ADM",
-    cuerpo: ({ destinatario, asunto, antecedentes, fecha }) => [
-      `En la sede de la Compañía de Bomberos Voluntarios France N° 3, siendo el ${fecha}, se reunió ${destinatario} para tratar ${enMinuscula(asunto)}.`,
-      `DESARROLLO\n${antecedentes || "Se expusieron los avances del período y se absolvieron las consultas del pleno."}`,
-      "ACUERDOS\n1. Aprobar lo expuesto por la Administración.\n2. Disponer el seguimiento mensual de los indicadores.\n3. Remitir copia del acta a las secciones involucradas.",
-    ],
-    cierre: "No habiendo otro punto que tratar, se levanta la sesión.",
-  },
-];
-
-export type DocumentoGenerado = {
-  id: string;
-  numero: string;
-  tipo: string;
-  asunto: string;
-  destinatario: string;
-  fecha: string;
-  autor: string;
-  estado: "Borrador" | "Validado" | "Enviado";
-  segundos: number;
-};
-
-export const HISTORIAL_GENERADOS: DocumentoGenerado[] = [
-  {
-    id: "g-023",
-    numero: "NOTA INFORMATIVA N° 023-2026",
-    tipo: "Nota Informativa",
-    asunto: "Informe de asistencia de personal — julio 2026",
-    destinatario: "IV Comandancia Departamental",
-    fecha: "05/08/2026",
-    autor: "Brig. Villanueva Ramos",
-    estado: "Enviado",
-    segundos: 42,
-  },
-  {
-    id: "g-022",
-    numero: "OFICIO N° 134-2026",
-    tipo: "Oficio",
-    asunto: "Requerimiento de mantenimiento de la unidad B-3",
-    destinatario: "Sección Máquinas",
-    fecha: "04/08/2026",
-    autor: "Brig. Villanueva Ramos",
-    estado: "Validado",
-    segundos: 51,
-  },
-  {
-    id: "g-021",
-    numero: "MEMORANDO N° 113-2026",
-    tipo: "Memorando",
-    asunto: "Disposición de uso de uniforme en actos oficiales",
-    destinatario: "Todo el personal",
-    fecha: "03/08/2026",
-    autor: "Tte. Brig. Paredes Loayza",
-    estado: "Enviado",
-    segundos: 38,
-  },
-  {
-    id: "g-020",
-    numero: "INFORME N° 019-2026",
-    tipo: "Informe",
-    asunto: "Avance del plan de actualización de files de personal",
-    destinatario: "Jefatura de Compañía",
-    fecha: "02/08/2026",
-    autor: "Brig. Villanueva Ramos",
-    estado: "Validado",
-    segundos: 67,
-  },
-  {
-    id: "g-019",
-    numero: "CARTA N° 016-2026",
-    tipo: "Carta institucional",
-    asunto: "Agradecimiento por donación de equipamiento",
-    destinatario: "Municipalidad de Cercado de Lima",
-    fecha: "01/08/2026",
-    autor: "Sec. Chávez Núñez",
-    estado: "Borrador",
-    segundos: 33,
-  },
-  {
-    id: "g-018",
-    numero: "ACTA N° 009-2026",
-    tipo: "Acta",
-    asunto: "Reunión del Cuadro de Oficiales",
-    destinatario: "Cuadro de Oficiales",
-    fecha: "01/08/2026",
-    autor: "Sec. Chávez Núñez",
-    estado: "Enviado",
-    segundos: 71,
-  },
-];
-
-export const DESTINATARIOS = [
-  "IV Comandancia Departamental Lima",
-  "Jefatura de Compañía",
-  "Cuadro de Oficiales",
-  "Sección Administración",
-  "Sección Logística",
-  "Sección Máquinas",
-  "Sección Personal",
-  "Sección Instrucción",
-  "Todo el personal de la Compañía",
-];
-
 export const documentoPorId = (id: string) =>
   DOCUMENTOS.find((documento) => documento.id === id);
 
 /* ============================================================
-   Proyecto 3 — Dashboard Ejecutivo
+   Proyecto 2 — Dashboard Ejecutivo
    ============================================================ */
 
 export const KPIS_EJECUTIVO = [
@@ -670,32 +435,6 @@ export const CONSUMO_COMBUSTIBLE = [
   { unidad: "C-3", galones: 94 },
 ];
 
-export const ALERTAS_IA = [
-  {
-    nivel: "critica" as const,
-    titulo: "Anomalía en tiempo de respuesta",
-    detalle:
-      "El turno 16–20 h registra 8:10 min promedio, 27% por encima del objetivo institucional.",
-  },
-  {
-    nivel: "prediccion" as const,
-    titulo: "Pronóstico de demanda",
-    detalle:
-      "Se proyectan 134 emergencias para septiembre (+5%), con mayor incidencia en Cercado de Lima.",
-  },
-  {
-    nivel: "recomendacion" as const,
-    titulo: "Optimización de unidades",
-    detalle:
-      "Reasignar la R-13 al turno tarde reduciría el tiempo de respuesta estimado en 42 segundos.",
-  },
-  {
-    nivel: "aviso" as const,
-    titulo: "Mantenimientos próximos",
-    detalle: "3 unidades requieren mantenimiento programado dentro de los próximos 10 días.",
-  },
-];
-
 /* Personal */
 
 export const METRICAS_PERSONAL = [
@@ -734,7 +473,7 @@ export const CAPACITACIONES = [
 /* Administración */
 
 export const METRICAS_ADMINISTRACION = [
-  { etiqueta: "Documentos pendientes", valor: "27", nota: "Mesa de Partes" },
+  { etiqueta: "Documentos pendientes", valor: "27", nota: "Bandeja Documental" },
   { etiqueta: "Convenios vigentes", valor: "6", nota: "2 por renovar" },
   { etiqueta: "Requerimientos abiertos", valor: "9", nota: "De 14 del mes" },
   { etiqueta: "Caja chica", valor: "S/ 1 840", nota: "Saldo disponible" },

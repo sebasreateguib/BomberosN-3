@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { documentoPorId } from "@/lib/datos-demo";
 import { EtiquetaEstado, EtiquetaPrioridad } from "../../Etiquetas";
-import { IconChispa, IconDescarga } from "../../../iconos";
+import { IconDescarga } from "../../../iconos";
 import styles from "../../../panel.module.css";
 
 type Props = { params: Promise<{ id: string }> };
@@ -27,7 +27,7 @@ export default async function DetalleDocumento({ params }: Props) {
       <header className={styles.encabezado}>
         <div>
           <p className={styles.migas}>
-            <Link href="/panel/mesa-de-partes/documentos">Bandeja documental</Link>
+            <Link href="/panel/bandeja-documental/documentos">Documentos</Link>
             <span data-acento="">·</span> {documento.tipo}
           </p>
           <h1 className={styles.titulo}>{documento.numero}</h1>
@@ -62,23 +62,6 @@ export default async function DetalleDocumento({ params }: Props) {
                 <span className={styles.fichaValor}>{valor}</span>
               </div>
             ))}
-          </div>
-
-          <div className={styles.iaCaja} style={{ marginTop: "1.75rem" }}>
-            <span className={styles.iaTitulo}>
-              <IconChispa width={13} height={13} />
-              Clasificación por inteligencia artificial
-            </span>
-            <span className={styles.iaValor}>{documento.clasificacionIA}</span>
-            <span className={styles.medidor}>
-              <span
-                className={styles.medidorRelleno}
-                style={{ width: `${documento.confianzaIA}%` }}
-              />
-            </span>
-            <span className={styles.lineaMeta}>
-              Confianza del modelo: {documento.confianzaIA}%
-            </span>
           </div>
         </section>
 

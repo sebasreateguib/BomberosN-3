@@ -80,8 +80,7 @@ export function LoginForm() {
           institucional
         </h1>
         <p className={styles.cardSub}>
-          Mesa de Partes Virtual, generación documental asistida y tablero
-          operativo de la Compañía.
+          Bandeja Documental y tablero operativo de la Compañía.
         </p>
       </div>
 

@@ -31,25 +31,6 @@ export function IconBandeja(p: Props) {
   );
 }
 
-export function IconRedactar(p: Props) {
-  return (
-    <svg {...base} {...p} aria-hidden="true">
-      <path d="M13 4.5H6.5A1.5 1.5 0 0 0 5 6v12a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 18v-6" />
-      <path d="M17.2 3.3a1.8 1.8 0 0 1 2.5 2.5L13 12.5l-3.2.7.7-3.2 6.7-6.7Z" />
-    </svg>
-  );
-}
-
-export function IconHistorial(p: Props) {
-  return (
-    <svg {...base} {...p} aria-hidden="true">
-      <path d="M4 12a8 8 0 1 0 2.5-5.8" />
-      <path d="M4 4.5V9h4.5" />
-      <path d="M12 8v4.3l3 1.7" />
-    </svg>
-  );
-}
-
 export function IconGrafico(p: Props) {
   return (
     <svg {...base} {...p} aria-hidden="true">
@@ -80,15 +61,6 @@ export function IconBuscar(p: Props) {
   );
 }
 
-export function IconCampana(p: Props) {
-  return (
-    <svg {...base} {...p} aria-hidden="true">
-      <path d="M6.5 10a5.5 5.5 0 0 1 11 0c0 4 1.5 5.5 1.5 5.5H5S6.5 14 6.5 10Z" />
-      <path d="M10 18.5a2 2 0 0 0 4 0" />
-    </svg>
-  );
-}
-
 export function IconSalir(p: Props) {
   return (
     <svg {...base} {...p} aria-hidden="true">
@@ -108,29 +80,12 @@ export function IconFlecha(p: Props) {
   );
 }
 
-export function IconChispa(p: Props) {
-  return (
-    <svg {...base} {...p} aria-hidden="true">
-      <path d="M12 3.5 13.9 9l5.6 1.9-5.6 1.9L12 18.5l-1.9-5.7L4.5 10.9 10.1 9 12 3.5Z" />
-    </svg>
-  );
-}
-
 export function IconDescarga(p: Props) {
   return (
     <svg {...base} {...p} aria-hidden="true">
       <path d="M12 4v10" />
       <path d="m8 10.5 4 4 4-4" />
       <path d="M5 19h14" />
-    </svg>
-  );
-}
-
-export function IconCopiar(p: Props) {
-  return (
-    <svg {...base} {...p} aria-hidden="true">
-      <rect x="9" y="9" width="11" height="11" rx="1.5" />
-      <path d="M15 6.5V6A1.5 1.5 0 0 0 13.5 4.5h-8A1.5 1.5 0 0 0 4 6v8a1.5 1.5 0 0 0 1.5 1.5H6" />
     </svg>
   );
 }
@@ -166,18 +121,3 @@ export function IconCarpeta(p: Props) {
   );
 }
 
-export function IconChevron(p: Props) {
-  return (
-    <svg {...base} {...p} aria-hidden="true">
-      <path d="m7 10 5 5 5-5" />
-    </svg>
-  );
-}
-
-export function IconCheck(p: Props) {
-  return (
-    <svg {...base} {...p} aria-hidden="true">
-      <path d="m5 12.5 4.5 4.5L19 7" />
-    </svg>
-  );
-}

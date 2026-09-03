@@ -81,7 +81,7 @@ export function TablaDocumentos({ documentos }: { documentos: Documento[] }) {
                 <td>
                   <Link
                     className={styles.celdaNumero}
-                    href={`/panel/mesa-de-partes/documentos/${documento.id}`}
+                    href={`/panel/bandeja-documental/documentos/${documento.id}`}
                   >
                     {documento.numero}
                   </Link>
