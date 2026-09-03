@@ -47,13 +47,7 @@ export default function DashboardEjecutivo() {
       <section className={styles.kpis}>
         {KPIS_EJECUTIVO.map((kpi) => {
           const variacion = "variacion" in kpi ? kpi.variacion : undefined;
-          const mejorSube = "mejorSube" in kpi ? kpi.mejorSube : true;
-          const buena =
-            variacion === undefined
-              ? true
-              : mejorSube
-                ? variacion >= 0
-                : variacion <= 0;
+          const buena = variacion === undefined ? true : variacion >= 0;
 
           return (
             <article key={kpi.clave} className={styles.kpi}>
