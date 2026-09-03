@@ -249,93 +249,6 @@
   color: var(--muted-dim);
 }
 
-/* ---------- Estado de la Compañía ---------- */
-
-/* Va entre la navegación y el pie: como .nav se lleva el flex sobrante,
-   este bloque queda anclado al fondo sin estirarse ni dejar hueco. */
-.estado {
-  display: flex;
-  flex: 0 0 auto;
-  flex-direction: column;
-  gap: 0.7rem;
-  padding: 1rem 1.25rem;
-  border-top: 1px solid var(--linea);
-}
-
-.estadoCabecera {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.5625rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.estadoPulso {
-  width: 5px;
-  height: 5px;
-  flex: 0 0 auto;
-  border-radius: 50%;
-  background: #46d67f;
-  animation: latido 2.4s var(--ease) infinite;
-}
-
-.estadoHora {
-  margin-left: auto;
-  letter-spacing: 0.1em;
-  font-variant-numeric: tabular-nums;
-  color: var(--muted-dim);
-}
-
-.estadoDato {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.estadoFila {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.5rem;
-  font-size: 0.75rem;
-}
-
-.estadoEtiqueta {
-  color: var(--muted-dim);
-}
-
-.estadoValor {
-  font-family: var(--font-display), sans-serif;
-  font-size: 0.9375rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  font-variant-numeric: tabular-nums;
-  color: var(--bone);
-}
-
-.estadoValor em {
-  font-family: var(--font-body), sans-serif;
-  font-size: 0.6875rem;
-  font-weight: 400;
-  font-style: normal;
-  letter-spacing: 0.02em;
-  color: var(--muted-dim);
-}
-
-.estadoSegmentos {
-  display: flex;
-  gap: 3px;
-}
-
-.estadoSegmento {
-  flex: 1;
-  height: 4px;
-  background: rgba(244, 240, 233, 0.08);
-}
-
 /* ---------- Barra superior ---------- */
 
 .principal {
@@ -359,38 +272,6 @@
   backdrop-filter: blur(14px);
 }
 
-.buscador {
-  flex: 1;
-  max-width: 26rem;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.5rem 0.8rem;
-  border: 1px solid var(--linea);
-  background: rgba(244, 240, 233, 0.03);
-  color: var(--muted-dim);
-  font-size: 0.8125rem;
-}
-
-.buscador input {
-  flex: 1;
-  border: 0;
-  background: transparent;
-  color: var(--bone);
-  font-family: inherit;
-  font-size: 0.8125rem;
-}
-
-.buscador input:focus {
-  outline: none;
-}
-
-.buscador kbd {
-  padding: 0.1rem 0.3rem;
-  border: 1px solid var(--linea);
-  font-size: 0.625rem;
-  color: var(--muted-dim);
-}
 
 .acciones {
   display: flex;
@@ -651,8 +532,8 @@
   color: #46d67f;
 }
 
-.bajaBien {
-  color: #46d67f;
+.bajaMal {
+  color: #e5484d;
 }
 
 .subeMal {
@@ -960,7 +841,7 @@
   color: #46d67f;
 }
 .estadoArchivado {
-  color: rgba(244, 240, 233, 0.42);
+  color: rgba(250, 12, 12, 0.42);
 }
 
 .prioridadAlta {
@@ -970,7 +851,7 @@
   color: var(--brass);
 }
 .prioridadBaja {
-  color: rgba(244, 240, 233, 0.42);
+  color: rgba(34, 199, 241, 0.42);
 }
 
 /* ---------- Detalle de documento ---------- */
@@ -1107,18 +988,6 @@
   }
 }
 
-@keyframes latido {
-  0%,
-  100% {
-    opacity: 1;
-    box-shadow: 0 0 0 0 rgba(70, 214, 127, 0.45);
-  }
-  50% {
-    opacity: 0.55;
-    box-shadow: 0 0 0 4px rgba(70, 214, 127, 0);
-  }
-}
-
 @keyframes crecer {
   from {
     transform: scaleX(0);
@@ -1220,7 +1089,6 @@
     font-size: 0.875rem;
   }
 
-  .estado,
   .sidebarPie {
     display: none;
   }
@@ -1228,10 +1096,6 @@
   .barra {
     position: static;
     padding: 0.6rem 1rem;
-  }
-
-  .buscador {
-    display: none;
   }
 
   .usuarioMeta {
@@ -1242,8 +1106,7 @@
 @media (prefers-reduced-motion: reduce) {
   .graficoLinea,
   .graficoRelleno,
-  .barraRelleno,
-  .estadoPulso {
+  .barraRelleno {
     animation: none !important;
     stroke-dashoffset: 0;
     opacity: 1;

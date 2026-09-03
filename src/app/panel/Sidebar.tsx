@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { EstadoCompania } from "./EstadoCompania";
 import {
   IconBandeja,
   IconCarpeta,
@@ -182,8 +181,6 @@ export function Sidebar() {
           </div>
         ))}
       </nav>
-
-      <EstadoCompania />
 
       <div className={styles.sidebarPie}>
         Maqueta de demostración · Datos ficticios

@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { obtenerSesion } from "@/lib/sesion";
 import { salir } from "./actions";
 import { Sidebar } from "./Sidebar";
-import { IconBuscar, IconSalir } from "./iconos";
+import { IconSalir } from "./iconos";
 import styles from "./panel.module.css";
 
 export default async function PanelLayout({
@@ -22,16 +22,6 @@ export default async function PanelLayout({
 
       <div className={styles.principal}>
         <header className={styles.barra}>
-          <label className={styles.buscador}>
-            <IconBuscar width={15} height={15} />
-            <input
-              type="search"
-              placeholder="Buscar documento, número o remitente…"
-              aria-label="Buscar en el sistema"
-            />
-            <kbd>⌘K</kbd>
-          </label>
-
           <div className={styles.acciones}>
             <div className={styles.usuario}>
               <span className={styles.avatar}>{bombero.iniciales}</span>

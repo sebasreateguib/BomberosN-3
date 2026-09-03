@@ -11,7 +11,6 @@ const ESTADOS: (EstadoDocumento | "Todos")[] = [
   "Todos",
   "Pendiente",
   "En proceso",
-  "Derivado",
   "Atendido",
   "Archivado",
 ];

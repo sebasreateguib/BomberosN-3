@@ -4,7 +4,6 @@ import styles from "../panel.module.css";
 const CLASES_ESTADO: Record<EstadoDocumento, string> = {
   Pendiente: styles.estadoPendiente,
   "En proceso": styles.estadoEnProceso,
-  Derivado: styles.estadoDerivado,
   Atendido: styles.estadoAtendido,
   Archivado: styles.estadoArchivado,
 };

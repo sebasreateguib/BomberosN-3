@@ -15,7 +15,6 @@ export const metadata: Metadata = { title: "Bandeja Documental" };
 
 const TONOS: Record<string, string> = {
   ingresos: "#4a7ade",
-  derivados: "#9b8cf5",
   pendientes: "#f2b544",
   atendidos: "#46d67f",
 };
@@ -63,15 +62,7 @@ export default function MesaDePartes() {
 
       <section className={styles.kpis}>
         {KPIS_MESA.map((kpi) => {
-          const buenaBaja = kpi.clave === "pendientes";
-          const clase =
-            kpi.variacion >= 0
-              ? buenaBaja
-                ? styles.subeMal
-                : styles.subeBien
-              : buenaBaja
-                ? styles.bajaBien
-                : styles.subeMal;
+          const clase = kpi.variacion >= 0 ? styles.subeBien : styles.bajaMal;
 
           return (
             <article

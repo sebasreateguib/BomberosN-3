@@ -32,7 +32,6 @@ export const GUARDIA_ACTUAL = { enServicio: 12, dotacion: 18 };
 export type EstadoDocumento =
   | "Pendiente"
   | "En proceso"
-  | "Derivado"
   | "Atendido"
   | "Archivado";
 
@@ -90,12 +89,6 @@ const traza = (
       detalle: "Tipo, prioridad y área responsable asignados al registro.",
     },
     {
-      etapa: "Derivación",
-      hora: "09:15",
-      responsable: "Administración",
-      detalle: `Derivado a ${seccion} para su atención.`,
-    },
-    {
       etapa: "Seguimiento",
       hora: "11:30",
       responsable: seccion,
@@ -143,7 +136,7 @@ export const DOCUMENTOS: Documento[] = [
     folios: 2,
     fechaIngreso: "04/08/2026",
     plazo: "08/08/2026",
-    estado: "Derivado",
+    estado: "Atendido",
     prioridad: "Media",
     trazabilidad: traza("Bomb. Rojas Medina", "Jefatura de Compañía", "04/08/2026", 3),
   },
@@ -248,7 +241,7 @@ export const DOCUMENTOS: Documento[] = [
     folios: 9,
     fechaIngreso: "31/07/2026",
     plazo: "07/08/2026",
-    estado: "Derivado",
+    estado: "Atendido",
     prioridad: "Alta",
     trazabilidad: traza("Bomb. Rojas Medina", "Sección Operaciones", "31/07/2026", 3),
   },
@@ -301,7 +294,6 @@ export const DOCUMENTOS: Documento[] = [
 
 export const KPIS_MESA = [
   { clave: "ingresos", etiqueta: "Ingresos", valor: 128, nota: "Este mes", variacion: 12 },
-  { clave: "derivados", etiqueta: "Derivados", valor: 86, nota: "Este mes", variacion: 8 },
   { clave: "pendientes", etiqueta: "Pendientes", valor: 27, nota: "Por atender", variacion: -5 },
   { clave: "atendidos", etiqueta: "Atendidos", valor: 101, nota: "Este mes", variacion: 15 },
 ] as const;
