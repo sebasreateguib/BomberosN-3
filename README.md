@@ -104,16 +104,36 @@ no existe el caso de un archivo subido que nadie llegue a procesar.
 
 ## El orden importa
 
-La fila se crea **antes** que la subida. Al revés quedarían archivos huérfanos en Storage el día
-que Postgres no responda.
+La fila de `cargas` se crea **antes** que la subida, con la ruta de Storage ya reservada. Al revés
+quedarían archivos huérfanos el día que Postgres no responda: subidos, pero sin nadie que sepa
+que existen. Creando la fila primero, un fallo en cualquier punto deja un estado visible que un
+barrido puede cerrar. Ningún fallo es silencioso.
 
-1. `INSERT` en `cargas` con estado `esperando_archivo` y la ruta de Storage reservada
-2. Signed upload URL para esa ruta
-3. El navegador sube el Excel directo a Storage — el server de Next.js nunca toca el archivo
-4. `UPDATE` a `pendiente` y encolado, en la misma transacción
+## Flujo completo
 
-Si algo falla en cualquier punto, el usuario ve el error antes de que exista trabajo a medias y
-la fila queda en un estado visible que un barrido puede cerrar. Ningún fallo es silencioso.
+Diagrama editable en `arquitectura.drawio`.
+
+| # | Servicio | Qué ocurre |
+|---|---|---|
+| 1 | Next.js → Postgres | `INSERT` en `cargas`, estado `esperando_archivo`, con la ruta de Storage reservada |
+| 2 | Next.js → navegador | Devuelve la signed upload URL para esa ruta |
+| 3 | Navegador → Storage | `PUT` del Excel. Sale desde el cliente; Vercel no ve el archivo |
+| 4 | Navegador → Next.js | Storage responde `200` al navegador, que llama a `confirmarCarga()` |
+| 5 | Next.js → Postgres | `UPDATE cargas → pendiente` **+** `pgmq.send()`, en una sola transacción |
+| 6 | Postgres | El trigger `AFTER UPDATE` sobre `cargas` ejecuta `pg_net` |
+| 7 | pg_net → Edge Function | `net.http_post()` la despierta. `pg_cron` la despierta también cada minuto |
+| 8 | Edge Function → pgmq | `read(vt=300)` reclama un mensaje; queda invisible cinco minutos |
+| 9 | Edge Function → Postgres | `UPDATE cargas → procesando`, graba `locked_at` |
+| 10 | Edge Function → Storage | `download` del Excel |
+| 11 | Edge Function | Parseo con SheetJS y validación de cabeceras |
+| 12 | Edge Function → Postgres | `INSERT` por lotes en las tablas de datos, vía RPC |
+| 13 | Edge Function → Postgres | `UPDATE cargas → completado` (o `error` con el detalle) |
+| 14 | Edge Function → pgmq | `delete(msg_id)` cierra el mensaje |
+| 15 | Postgres → Realtime → navegador | El UPDATE del paso 13 entra al WAL y sale por WebSocket |
+| 16 | Navegador → Next.js → Postgres | `router.refresh()` y `SELECT` sobre las vistas |
+
+Los pasos 1, 2, 4, 5 y 16 son los únicos en que interviene Next.js, y ninguno toca el archivo: el
+Excel viaja del disco del usuario a Storage y de ahí a la Edge Function, sin pasar por Vercel.
 
 ## Estados de una carga
 
@@ -123,11 +143,29 @@ esperando_archivo ──▶ pendiente ──▶ procesando ──▶ completado
         └──▶ caducada          (barrido: subida abandonada)
 ```
 
+## Quién despierta al worker
+
+Dos mecanismos, y hacen falta los dos.
+
+**El acelerador.** Un trigger `AFTER UPDATE` sobre `cargas` que dispara `net.http_post()` hacia la
+Edge Function en cuanto el estado pasa a `pendiente`. Nadie lo invoca: es una regla que Postgres
+aplica solo. `pg_net` encola la petición en su propia tabla y la despacha tras el `COMMIT`, así
+que la función nunca despierta antes de que el trabajo sea visible. La clave de autenticación va
+en Supabase Vault.
+
+**La red de seguridad.** Un `pg_cron` que invoca la función cada minuto pase lo que pase.
+
+La invocación es un timbre, no una orden: no lleva qué carga procesar. La función despierta, le
+pregunta a la cola qué hay pendiente y reclama un mensaje. Por eso da igual cuántas invocaciones
+se pierdan o se dupliquen —el trabajo se hace una sola vez, y cualquier despertar drena lo que
+haya—, y por eso el trigger vive en la tabla y no en Next.js: cuando `pg_cron` devuelve a
+`pendiente` una carga colgada, el aviso se dispara igual, sin que nadie deba acordarse de emitirlo.
+
 ## El worker
 
-Edge Function en `supabase/functions/procesar-carga`, despertada por el encolado y por un
-`pg_cron` de respaldo. Descarga el Excel de Storage, valida cabeceras, inserta por lotes y cierra
-la fila.
+Edge Function en `supabase/functions/procesar-carga`. Descarga el Excel de Storage, lo parsea con
+SheetJS —el runtime es Deno, no hay pandas—, valida cabeceras, inserta por lotes y cierra la
+fila.
 
 - **Idempotencia.** Toda fila insertada lleva `carga_id`; reprocesar borra por `carga_id` y
   vuelve a insertar. Un reintento nunca duplica datos.
@@ -137,9 +175,15 @@ la fila.
 - **Solo se reintenta lo transitorio.** La base saturada se reintenta. Un Excel con la cabecera
   equivocada no: pasa a `error` con la fila y la columna del problema, y eso se muestra en el
   panel. Reintentar tres veces un archivo mal formado no lo arregla y esconde el motivo.
-- **Excels grandes.** La Edge Function tiene tope de ejecución. Por encima del umbral la carga se
-  parte en bloques, un mensaje por bloque, y cierra cuando todos terminan. `filas_procesadas`
-  alimenta la barra de progreso.
+- **Excels grandes.** La Edge Function tiene tope de ejecución y de memoria, y un `.xlsx` es XML
+  comprimido que se expande al parsearlo. Por encima del umbral la carga se parte en bloques, un
+  mensaje por bloque, con borrado por `(carga_id, bloque)`, y cierra cuando todos terminan.
+  `filas_procesadas` alimenta la barra de progreso.
+- **Subidas abandonadas.** Si el usuario cierra la pestaña entre el `200` de Storage y
+  `confirmarCarga()`, la fila se queda en `esperando_archivo`. Un `pg_cron` revisa esas filas
+  contra la ruta reservada en Storage: si el archivo está, la promueve a `pendiente`; si no,
+  la marca `caducada`. Es la razón de reservar la ruta en el paso 1 — sin ese registro previo
+  no habría dónde mirar.
 
 ## Actualización del panel
 
