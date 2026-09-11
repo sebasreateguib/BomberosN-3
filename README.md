@@ -120,7 +120,7 @@ barrido puede cerrar. Ningún fallo es silencioso.
 
 ## Flujo completo
 
-Diagrama editable en `arquitectura.drawio`.
+Diagrama editable en `arquitectura.drawio`, página *Ingesta de consolidados*.
 
 | # | Servicio | Qué ocurre |
 |---|---|---|
@@ -269,6 +269,8 @@ mensaje de `pgmq` se crean en la misma transacción que el cambio de estado, as�
 documento archivado que nadie llegue a copiar. De paso, el archivo no pasa por Vercel.
 
 ## Flujo completo del archivado
+
+Diagrama editable en `arquitectura.drawio`, página *Archivado en Drive*.
 
 | # | Servicio | Qué ocurre |
 |---|---|---|
